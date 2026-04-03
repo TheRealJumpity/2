@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Site A</title>
+    <!-- Automatic redirect if JS fails (optional) -->
+    <meta http-equiv="refresh" content="5; URL=https://TheRealJumpity.github.io/1/" />
+</head>
+<body style="background: black; color: white; display: flex; align-items: center; justify-content: center; height: 100vh;">
+    
+    <button id="start">Enter Loop</button>
+
+    <script>
+        document.getElementById('start').onclick = function() {
+            // Request Fullscreen (Requires user click)
+            document.documentElement.requestFullscreen().catch(e => console.log(e));
+            
+            // Redirect to Site B after 1 second
+            setTimeout(() => {
+                window.location.href = "https://YOUR_USER.github.io/SITE_B/";
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
