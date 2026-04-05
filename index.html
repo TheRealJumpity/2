@@ -1,86 +1,57 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SYSTEM_CRITICAL_HOMIK</title>
+    <title>SYSTEM CRITICAL</title>
     <style>
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
+        body {
             background-color: black;
             color: white;
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden;
-            cursor: none;
-            user-select: none;
-        }
-
-        h1 {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-family: 'Courier New', monospace;
-            font-size: clamp(50px, 15vw, 150px);
-            z-index: 1000;
-            position: relative;
+            cursor: none;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 10vw;
             text-shadow: 0 0 20px red;
-        }
-
-        .fake-popup {
-            position: absolute;
-            background: #c0c0c0;
-            border: 2px solid #fff;
-            border-right: 2px solid #000;
-            border-bottom: 2px solid #000;
-            width: 200px;
-            height: 100px;
-            padding: 2px;
-            z-index: 500;
-            pointer-events: none;
-        }
-
-        .popup-bar {
-            background: darkblue;
-            height: 18px;
-            width: 100%;
         }
     </style>
 </head>
-<body onclick="startChaos()">
+<body onclick="startTroll()">
 
     <h1>HOMIK</h1>
 
     <script>
-        function startChaos() {
+        function startTroll() {
+            // Входим в полный экран
             const elem = document.documentElement;
             if (elem.requestFullscreen) elem.requestFullscreen();
 
-            setInterval(() => {
-                createPopup();
-            }, 10);
+            // Бесконечный цикл алертов
+            // Это "подвесит" вкладку, так как alert блокирует поток выполнения
+            while (true) {
+                alert("CRITICAL ERROR: HOMIK DETECTED");
+                alert("SYSTEM BREACH: ACCESS DENIED");
+                alert("REBOOTING... ERROR 0x0000001");
+                alert("DO NOT CLOSE THIS WINDOW");
+            }
         }
 
-        function createPopup() {
-            const popup = document.createElement('div');
-            popup.className = 'fake-popup';
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-            popup.style.left = x + 'px';
-            popup.style.top = y + 'px';
-            popup.innerHTML = '<div class="popup-bar"></div><div style="color:black; font-size:10px; padding:5px;">FATAL_ERROR: HOMIK.exe</div>';
-            document.body.appendChild(popup);
-
-            setTimeout(() => {
-                popup.remove();
-            }, 50);
-        }
-
+        // Блокировка клавиш
         window.addEventListener('keydown', (e) => {
             e.preventDefault();
-            e.stopPropagation();
             return false;
         }, true);
 
-        document.addEventListener('contextmenu', e => e.preventDefault());
-
-        window.onbeforeunload = () => "HOMIK СЛЕДИТ ЗА ТОБОЙ";
+        // Защита от закрытия
+        window.onbeforeunload = function() {
+            return "HOMIK IS WATCHING YOU";
+        };
     </script>
 </body>
 </html>
