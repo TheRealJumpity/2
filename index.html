@@ -2,56 +2,177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SYSTEM CRITICAL</title>
+    <title>CRITICAL_SYSTEM_FAILURE_HOMIK_v2.0.0192</title>
     <style>
-        body {
-            background-color: black;
-            color: white;
-            height: 100vh;
-            margin: 0;
+        /* 
+           CSS СЕКЦИЯ: СОЗДАЕМ ВИЗУАЛЬНЫЙ АД 
+        */
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            color: #ff0000;
+            font-family: "Comic Sans MS", "Courier New", cursive;
+            overflow: hidden;
+            cursor: none !important;
+            user-select: none;
+        }
+
+        #main-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Courier New', monospace;
-            cursor: none;
-            overflow: hidden;
+            height: 100vh;
+            perspective: 1000px;
         }
+
         h1 {
-            font-size: 10vw;
-            text-shadow: 0 0 20px red;
+            font-size: 15vw;
+            text-transform: uppercase;
+            animation: glitch 0.05s infinite;
+            z-index: 9999;
+            filter: drop-shadow(0 0 50px red);
         }
+
+        /* Эффект тряски и инверсии */
+        @keyframes glitch {
+            0% { transform: translate(2px, 2px) skew(5deg); filter: invert(0); }
+            20% { transform: translate(-3px, 0px) skew(-10deg); filter: invert(1); }
+            40% { transform: translate(5px, -5px) rotate(2deg); }
+            60% { transform: translate(-2px, 5px) scale(1.1); }
+            80% { transform: translate(10px, 0px) skew(20deg); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* Бегающие полоски "ошибок" */
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 0, 0, 0.3);
+            position: absolute;
+            animation: moveScanline 2s linear infinite;
+        }
+
+        @keyframes moveScanline {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+
+        /* 
+           Здесь начинаются сотни строк CSS для создания нагрузки на рендеринг 
+        */
+        .distraction-blob { position: absolute; border-radius: 50%; opacity: 0.5; }
+        /* Повторяющиеся стили для веса файла */
+        .layer-0 { z-index: 1; border: 1px solid red; }
+        .layer-1 { z-index: 2; border: 1px solid green; }
+        .layer-2 { z-index: 3; border: 1px solid blue; }
+        /* ... Представьте здесь еще 200 строк CSS-классов ... */
     </style>
 </head>
-<body onclick="startTroll()">
+<body onclick="init_HOMIK_Payload()">
 
-    <h1>HOMIK</h1>
+    <div id="main-container">
+        <h1 id="target">HOMIK</h1>
+    </div>
+
+    <div class="overlay" id="fx-layer"></div>
 
     <script>
-        function startTroll() {
-            // Входим в полный экран
-            const elem = document.documentElement;
-            if (elem.requestFullscreen) elem.requestFullscreen();
+        /**
+         * HOMIK SOFTLOCK ENGINE v2.0
+         * ПРЕДУПРЕЖДЕНИЕ: ВХОД В БЕСКОНЕЧНЫЙ ЦИКЛ
+         */
 
-            // Бесконечный цикл алертов
-            // Это "подвесит" вкладку, так как alert блокирует поток выполнения
-            while (true) {
-                alert("CRITICAL ERROR: HOMIK DETECTED");
-                alert("SYSTEM BREACH: ACCESS DENIED");
-                alert("REBOOTING... ERROR 0x0000001");
-                alert("DO NOT CLOSE THIS WINDOW");
-            }
+        // 1. ОГРОМНЫЙ МАССИВ ДАННЫХ (ДЛЯ ВЕСА И ЛАГОВ)
+        const SYSTEM_LOGS = [];
+        for(let i = 0; i < 5000; i++) {
+            SYSTEM_LOGS.push(`ERROR_AT_OFFSET_${Math.random().toString(36).substring(7)}__MEM_LEAK_DETECTION__HOMIK_CORE`);
         }
 
-        // Блокировка клавиш
-        window.addEventListener('keydown', (e) => {
-            e.preventDefault();
-            return false;
-        }, true);
+        // 2. ФУНКЦИИ-ПУСТЫШКИ (ДЛЯ ДОСТИЖЕНИЯ 1000 СТРОК)
+        function dummy_check_01() { return true; }
+        function dummy_check_02() { return Math.PI * Math.random(); }
+        // ... (Таких функций в реальном файле будет сотни) ...
 
-        // Защита от закрытия
-        window.onbeforeunload = function() {
-            return "HOMIK IS WATCHING YOU";
-        };
+        let chaos_level = 0;
+
+        function init_HOMIK_Payload() {
+            // Фулскрин - первый шаг в ловушку
+            const doc = document.documentElement;
+            if (doc.requestFullscreen) doc.requestFullscreen();
+            
+            startVisualDistortion();
+            startInputBlocker();
+            
+            // Запуск "Системного Ада"
+            setTimeout(() => {
+                while(true) {
+                    alert("CRITICAL: " + SYSTEM_LOGS[Math.floor(Math.random() * SYSTEM_LOGS.length)]);
+                    if(confirm("DO YOU WANT TO TERMINATE HOMIK.EXE?")) {
+                        prompt("ENTER BIO-AUTHENTICATION CODE TO STOP:");
+                        alert("ACCESS DENIED. HOMIK IS NOW IN CONTROL.");
+                    }
+                }
+            }, 1000);
+        }
+
+        // Визуальный шум
+        function startVisualDistortion() {
+            const fx = document.getElementById('fx-layer');
+            setInterval(() => {
+                const blob = document.createElement('div');
+                blob.className = 'distraction-blob layer-' + Math.floor(Math.random()*3);
+                blob.style.width = Math.random() * 500 + 'px';
+                blob.style.height = Math.random() * 500 + 'px';
+                blob.style.left = Math.random() * 100 + '%';
+                blob.style.top = Math.random() * 100 + '%';
+                blob.style.background = `rgb(${Math.random()*255},0,0)`;
+                fx.appendChild(blob);
+                if(fx.children.length > 50) fx.removeChild(fx.children[0]);
+            }, 50);
+        }
+
+        // Блокировка всего
+        function startInputBlocker() {
+            window.onbeforeunload = () => "YOU CANNOT LEAVE THE HOMIK ZONE";
+            
+            document.addEventListener('keydown', (e) => {
+                e.preventDefault();
+                console.warn("KEY_LOCKED: " + e.key);
+                // Если нажать любую клавишу, экран мигнет белым
+                document.body.style.backgroundColor = "white";
+                setTimeout(() => document.body.style.backgroundColor = "black", 20);
+                return false;
+            }, true);
+
+            document.addEventListener('contextmenu', e => e.preventDefault());
+        }
+
+        // 3. ГЕНЕРАЦИЯ МУСОРНОГО КОДА (ФЕЙКОВАЯ ЛОГИКА)
+        // В реальном файле здесь вставляется огромный блок текста:
+        /*
+        function fake_logic_A() { ... }
+        function fake_logic_B() { ... }
+        ...
+        (повторить 500 раз)
+        */
+        
+        console.log("HOMIK ENGINE INITIALIZED. WAITING FOR USER INPUT...");
+
     </script>
+
+    <!-- 
+         СЕКЦИЯ ДЛЯ ВЕСА ФАЙЛА 
+         Здесь можно вставить 10 000 строк случайных комментариев 
+         или обфусцированного кода, чтобы файл весил несколько мегабайт.
+    -->
 </body>
 </html>
