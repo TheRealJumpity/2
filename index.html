@@ -1,76 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title> </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КРИТИЧЕСКАЯ ОШИБКА СИСТЕМЫ</title>
     <style>
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            background: #000; overflow: hidden; cursor: none; 
+        body {
+            background-color: #0000aa; /* Классический BSOD синий */
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: none; /* Прячем настоящий курсор */
+            user-select: none;
+        }
+
+        #glitch-text {
+            font-size: 2.5rem;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 2px 2px #ff0000, -2px -2px #00ff00;
+        }
+
+        .popup {
+            position: absolute;
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            padding: 2px;
+            color: black;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.5);
+            z-index: 100;
+            width: 350px;
+        }
+
+        .popup-header {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            padding: 3px 5px;
+            font-size: 14px;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        #fake-cursor {
+            width: 20px;
+            height: 20px;
+            background: red;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.05s;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            background: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
+            position: absolute;
+        }
+
+        .shake { animation: shake 0.2s infinite; }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px); }
+            25% { transform: translate(-2px, -1px); }
+            50% { transform: translate(1px, 2px); }
+            100% { transform: translate(-1px, -2px); }
         }
     </style>
 </head>
-<body onclick="engage()">
+<body class="shake">
+    <!-- Красный кружок вместо курсора с задержкой -->
+    <div id="fake-cursor"></div>
+    
+    <div id="glitch-text">ИНИЦИАЛИЗАЦИЯ УДАЛЕНИЯ...</div>
+    
+    <!-- Кнопка, которая убегает -->
+    <button id="escape-btn" style="top: 60%; left: 45%;">ВЫЙТИ ИЗ СИСТЕМЫ</button>
 
-<script>
-    // --- НАСТРОЙКИ ---
-    // Замени "USER_ID" на свой ник в GitHub, а "REPO_NAME" на название репозитория
-    const BASE_URL = "https://TheRealJumpity.github.io/1/"; 
-    let active = true;
+    <script>
+        const glitchText = document.getElementById('glitch-text');
+        const escapeBtn = document.getElementById('escape-btn');
+        const fakeCursor = document.getElementById('fake-cursor');
 
-    async function engage() {
-        if (!active) return;
-        try {
-            const doc = document.documentElement;
-            if (doc.requestFullscreen) await doc.requestFullscreen();
-            else if (doc.webkitRequestFullscreen) await doc.webkitRequestFullscreen();
-        } catch (e) {}
-    }
+        const messages = [
+            "УДАЛЕНИЕ SYSTEM32... 45%",
+            "ОШИБКА: ОБНАРУЖЕН СЛИШКОМ УМНЫЙ ПОЛЬЗОВАТЕЛЬ",
+            "ЗАГРУЗКА ВИРУСА 'SMILE.EXE'...",
+            "ВАШ КУРСОР УСТАЛ И УШЕЛ В ОТПУСК",
+            "ОБНОВЛЕНИЕ ЯДРА (ОСТАЛОСЬ 999 ЧАСОВ)",
+            "CRITICAL_PROCESS_DIED",
+            "0x0000007B: INACCESSIBLE_BOOT_DEVICE"
+        ];
 
-    // Функция циклического редиректа на самого себя
-    function triggerLoop() {
-        if (!active) return;
-        // Если мы уже на #loop, убираем его, если нет — добавляем
-        const newUrl = window.location.hash === "#loop" ? BASE_URL : BASE_URL + "#loop";
-        window.location.replace(newUrl);
-    }
+        // Рандомные сообщения
+        setInterval(() => {
+            glitchText.innerText = messages[Math.floor(Math.random() * messages.length)];
+            glitchText.style.color = '#' + Math.floor(Math.random()*16777215).toString(16);
+        }, 1200);
 
-    // Блокировка клавиш
-    window.addEventListener('keydown', (e) => {
-        // СЕКРЕТНЫЙ ВЫХОД
-        if (e.key === "*") {
-            active = false;
-            document.body.style.cursor = "default";
-            if (document.exitFullscreen) document.exitFullscreen();
-            return;
+        // Логика убегающей кнопки и фейкового курсора
+        document.addEventListener('mousemove', (e) => {
+            // Фейковый курсор с задержкой (инпут-лаг)
+            setTimeout(() => {
+                fakeCursor.style.left = e.clientX + 'px';
+                fakeCursor.style.top = e.clientY + 'px';
+            }, 100);
+
+            // Убегание кнопки
+            const btnRect = escapeBtn.getBoundingClientRect();
+            const dist = Math.hypot(e.clientX - (btnRect.left + btnRect.width/2), e.clientY - (btnRect.top + btnRect.height/2));
+
+            if (dist < 120) {
+                escapeBtn.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+                escapeBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            }
+        });
+
+        // Фейковые системные окна
+        function spawnPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.style.left = Math.random() * 60 + '%';
+            popup.style.top = Math.random() * 60 + '%';
+            popup.innerHTML = `
+                <div class="popup-header"><span>Windows Security</span><span>✕</span></div>
+                <div style="padding: 15px; font-family: sans-serif; font-size: 13px;">
+                    Обнаружена попытка несанкционированного закрытия окна. <br><br>
+                    <b>Код угрозы:</b> USER_ESCAPE_ATTEMPT<br><br>
+                    <button onclick="this.parentElement.parentElement.remove()" style="position:static; padding: 3px 20px;">ОК</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
         }
 
-        if (active) {
+        setInterval(spawnPopup, 4000);
+
+        // Блокировка клавиш (F12, Ctrl+U и т.д.)
+        window.addEventListener('keydown', (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            // Любая клавиша (Esc, F11 и т.д.) вызывает редирект
-            triggerLoop();
-        }
-    }, true);
+            alert("Клавиатура заблокирована администратором системы.");
+            return false;
+        });
 
-    // Если пользователь вышел из Fullscreen (Esc/F11) — мгновенный редирект
-    document.addEventListener('fullscreenchange', () => {
-        if (active && !document.fullscreenElement) {
-            triggerLoop();
-        }
-    });
+        // Звуковой эффект при клике (нужно одно взаимодействие пользователя)
+        document.body.onclick = () => {
+            const audio = new Audio('https://www.soundjay.com/buttons/beep-01a.mp3');
+            audio.play();
+        };
 
-    // Попытка закрыть вкладку
-    window.onbeforeunload = () => active ? "" : null;
-
-    // Автоматическая попытка входа при загрузке (если был редирект)
-    window.onload = () => {
-        if (window.location.hash === "#loop" && active) {
-            // Браузер может блокировать авто-FS, поэтому ждем любого клика/движения
-            document.addEventListener('mousemove', engage, { once: true });
-        }
-    };
-
-</script>
+        // Предупреждение при попытке закрыть вкладку
+        window.onbeforeunload = function() {
+            return "Вы действительно хотите оставить систему в опасности?";
+        };
+    </script>
 </body>
 </html>
